@@ -3,6 +3,10 @@ import config
 import requests
 from flask import Flask, request
 
+#env variables
+WEBHOOK_VERIFY_TOKEN = os.getenv("WEBHOOK_VERIFY_TOKEN")
+ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
+
 app = Flask(__name__)
 
 @app.route('/favicon.ico')
@@ -21,7 +25,7 @@ def hello_world():
 def webhook_authorization():
     verify_token = request.args.get("hub.verify_token")
     # Check if sent token is correct
-    if verify_token == config.verify_token:
+    if verify_token == WEBHOOK_VERIFY_TOKEN:
         # Responds with the challenge token from the request
         return request.args.get("hub.challenge")
     return 'Failed authorization.'
@@ -39,7 +43,7 @@ def webhook_handle():
                 },
                 'message': {"text":"hello, world!"}
             }
-        response = requests.post('https://graph.facebook.com/v5.0/me/messages?access_token='+config.access_token,json=request_body).json()
+        response = requests.post('https://graph.facebook.com/v5.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
         return response
     return 'ok'
 
