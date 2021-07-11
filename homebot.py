@@ -1,11 +1,11 @@
-import credentials
+import config
 import requests
 from flask import Flask, request
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    return 'This is the homebot default page.'
 
 
 
@@ -14,12 +14,12 @@ def hello_world():
 def webhook_authorization():
     verify_token = request.args.get("hub.verify_token")
     # Check if sent token is correct
-    if verify_token == credentials.WEBHOOK_VERIFY_TOKEN:
+    if verify_token == config.verify_token:
         # Responds with the challenge token from the request
         return request.args.get("hub.challenge")
     return 'Unable to authorize.'
 
-
+#send message back
 @app.route("/webhook", methods=['POST'])
 def webhook_handle():
     data = request.get_json()
@@ -32,7 +32,7 @@ def webhook_handle():
                 },
                 'message': {"text":"hello, world!"}
             }
-        response = requests.post('https://graph.facebook.com/v5.0/me/messages?access_token='+credentials.TOKEN,json=request_body).json()
+        response = requests.post('https://graph.facebook.com/v5.0/me/messages?access_token='+config.access_token,json=request_body).json()
         return response
     return 'ok'
 
