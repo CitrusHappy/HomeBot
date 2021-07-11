@@ -31,10 +31,20 @@ def webhook_authorization():
     return 'Failed authorization.'
 
 #send message back
-@app.route("/webhook", methods=['POST'])
+@app.route('/webhook', methods=['POST'])
 def webhook_handle():
-    output = request.get_json()
-    print(output)
+    data = request.get_json()
+    message = data['entry'][0]['messaging'][0]['message']
+    sender_id = data['entry'][0]['messaging'][0]['sender']['id']
+    if message['text']:
+        request_body = {
+                'recipient': {
+                    'id': sender_id
+                },
+                'message': {"text":"hello, world!"}
+            }
+        response = requests.post('https://graph.facebook.com/v5.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
+        return response
     return 'ok'
 
 if __name__ == "__main__":
