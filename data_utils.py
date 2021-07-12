@@ -21,8 +21,6 @@ from __future__ import print_function
 import os
 import re
 
-from six.moves import urllib
-
 from tensorflow.python.platform import gfile
 
 # Special vocabulary symbols - we always put them at the start.

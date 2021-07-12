@@ -22,11 +22,11 @@ def hello_world():
 
 #receive message
 # Adds support for GET requests to our webhook
-@app.route('/webhook',methods=['GET'])
+@app.route('/webhook', methods=['GET'])
 def webhook_authorization():
     verify_token = request.args.get("hub.verify_token")
     # Check if sent token is correct
-    if verify_token == WEBHOOK_VERIFY_TOKEN:
+    if verify_token == WEBHOOK_VERIFY_TOKEN and verify_token != None:
         # Responds with the challenge token from the request
         return request.args.get("hub.challenge")
     return 'Failed authorization.'
@@ -45,7 +45,6 @@ def webhook_handle():
                 'message': {"text":"hello, world!"}
             }
         response = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
-        sys.stdout.write(message)
         return response
     return 'ok'
 
