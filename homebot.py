@@ -43,7 +43,7 @@ def webhook_handle():
                 },
                 'message': {"text":"hello, world!"}
             }
-        response = requests.post('https://graph.facebook.com/v5.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
+        response = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
         return response
     return 'ok'
 
