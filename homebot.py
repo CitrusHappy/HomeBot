@@ -1,6 +1,7 @@
 import os
 import config
 import requests
+import sys
 from flask import Flask, request
 
 #env variables
@@ -44,6 +45,7 @@ def webhook_handle():
                 'message': {"text":"hello, world!"}
             }
         response = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
+        sys.stdout.write(message)
         return response
     return 'ok'
 
