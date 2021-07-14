@@ -1,6 +1,4 @@
 import os
-import re
-import config
 import requests
 import sys
 from flask import Flask, request
