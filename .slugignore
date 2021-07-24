@@ -1,0 +1,5 @@
+#removed after build
+*.psd
+*.pdf
+/test
+/spec
