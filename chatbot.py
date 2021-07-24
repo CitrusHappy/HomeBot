@@ -54,8 +54,8 @@ def get_response(intents_list, intents_json):
 
 print("the bot is awake.")
 
-while True:
-    message = input("")
-    ints = predict_class(message)
-    res = get_response(ints, intents)
-    print(res)
+#while True:
+#    message = input("")
+#    ints = predict_class(message)
+#    res = get_response(ints, intents)
+#    print(res)
