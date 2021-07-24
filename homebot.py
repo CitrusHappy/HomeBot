@@ -1,6 +1,7 @@
 import os
 import requests
 import sys
+import chatbot
 from flask import Flask, request
 
 #env variables
@@ -38,11 +39,15 @@ def webhook_handle():
     if message != None:
         sender_id = data['entry'][0]['messaging'][0]['sender']['id']
         if message['text']:
+            message_text = message['text']
+            ints = chatbot.predict_class(message_text)
+            res = chatbot.get_response(ints, chatbot.intents)
+
             request_body = {
                     'recipient': {
                         'id': sender_id
                     },
-                    'message': {"text":"hello, world!"}
+                    'message': {"text":res}
                 }
             response = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
             return response
