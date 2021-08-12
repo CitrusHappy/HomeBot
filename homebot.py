@@ -1,7 +1,7 @@
 import os
 import requests
 import sys
-import chatbot
+#import chatbot
 
 from fbchat import Client, log
 from fbchat.models import *
