@@ -2,6 +2,7 @@ import random
 import json
 import numpy as np
 import pickle
+import re
 
 import nltk
 from nltk.stem import WordNetLemmatizer
@@ -15,13 +16,22 @@ from tensorflow.python.ops.numpy_ops import np_array_ops
 
 #pre-process json data into a word list
 lemmatizer = WordNetLemmatizer()
-intents = json.loads(open('intents.json').read())
+intents = json.loads(open('Data/intents.json').read())
+data = json.loads(open('Data/jared.json',  encoding="utf8").read())
 
 words = []
 classes = []
 documents = []
 ignore_letters = ['?', '!', '.', ',']
 
+
+#dataset 1, discord
+#for _messages in data['messages']:
+#    word_list = nltk.word_tokenize(re.sub(r'[^A-Za-z0-9 ]+', '', _messages['content']))
+#    words.extend(word_list)
+#    documents.append(word_list)
+
+#dataset 2 intents
 for intent in intents['intents']:
     for pattern in intent['patterns']:
         word_list = nltk.word_tokenize(pattern)
