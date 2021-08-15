@@ -65,25 +65,27 @@ def EventChecker():
     events = events_result.get('items', [])
 
     if not events:
-        print('No upcoming events found.')
-        print(now)
-    for event in events:
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        
-        print(now, ' == ', start)
+        return "No upcoming events found."
+    else:
+        for event in events:
+            start = event['start'].get('dateTime', event['start'].get('date'))
 
-        if start <= now:
-            print('notifying user of event: ', start, event['summary'])
-            #sends a single message to each user in list
-            for user in userlist:
-                request_body = {
-                'recipient': {
-                    'id': user
-                },
-                'message': {"text":event['summary']}
-                }
-                message = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
-                return message
+            print(now, ' == ', start)
+
+            if start <= now:
+                print('notifying user of event: ', start, event['summary'])
+                #sends a single message to each user in list
+                for user in userlist:
+                    request_body = {
+                    'recipient': {
+                        'id': user
+                    },
+                    'message': {"text":event['summary']}
+                    }
+                    message = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
+                    return message
+            else:
+                return "it is not time to notify"
 
 
 @app.route('/favicon.ico')
