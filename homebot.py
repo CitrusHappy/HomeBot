@@ -116,7 +116,7 @@ def webhook_handle():
     message = data['entry'][0]['messaging'][0]['message']
     if message != None:
         sender_id = data['entry'][0]['messaging'][0]['sender']['id']
-        if message.get('message', {}).get('text'):
+        if message['text']:
             message_text = message['text']
             ints = chatbot.predict_class(message_text)
             res = chatbot.get_response(ints, chatbot.intents)
