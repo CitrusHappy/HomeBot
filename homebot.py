@@ -136,7 +136,9 @@ def webhook_handle():
             print(res)
             response = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
             return response
+        print('ok')
         return 'ok'
+    print('empty message')
     return 'empty message'
 
 
