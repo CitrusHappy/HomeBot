@@ -52,13 +52,12 @@ def ApiLogin():
     global userlist
     userlist = []
 
+#send any messages to facebook
+@app.route('/webhook', methods=['POST'])
+def Notify(message):
+    return message
 
 #notify specified users when event on calendar starts
-@app.route('/webhook', methods=['POST'])
-def SendMessage():
-    response = q.enqueue(EventChecker, 'http://heroku.com')
-    return response
-
 def EventChecker():
     # Call the Calendar API
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
@@ -86,9 +85,9 @@ def EventChecker():
                 },
                 'message': {"text":event['summary']}
                 }
-                response = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
-                return response
-    
+                message = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
+                Notify(message)
+
 
 
 
@@ -99,6 +98,7 @@ def Favicon():
 
 @app.route('/')
 def Home():
+    q.enqueue(EventChecker)
     return 'This is the homebot default page.'
 
 
