@@ -17,6 +17,7 @@ from flask import Flask, request
 WEBHOOK_VERIFY_TOKEN = os.getenv("WEBHOOK_VERIFY_TOKEN")
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
 
+
 app = Flask(__name__)
 q = Queue(connection=conn)
 
@@ -57,9 +58,6 @@ def event_checker():
 
 
     service = build('calendar', 'v3', credentials=creds)
-    #temporary userid storage
-    global userlist
-    userlist = []
 
 
 
@@ -82,7 +80,7 @@ def event_checker():
             if start <= now:
                 print('notifying user of event: ', start, event['summary'])
                 #sends a single message to each user in list
-                for user in userlist:
+                for user in chatbot.userlist:
                     send_message(user, event['summary'])
                     return "done"
             else:
@@ -119,14 +117,8 @@ def webhook_handle():
         if message['text']:
             message_text = message['text']
             ints = chatbot.predict_class(message_text)
-            res = chatbot.get_response(ints, chatbot.intents)
-
-            #collect sender_id depending on response
-            if ints['tag'] == 'notifyme':
-                userlist.append(sender_id)
-            if ints['tag'] == 'removeme':
-                userlist.remove(sender_id)
-
+            res = chatbot.get_response(ints, chatbot.intents, sender_id)
+            
             request_body = {
                     'recipient': {
                         'id': sender_id
