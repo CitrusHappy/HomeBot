@@ -23,7 +23,10 @@ q = Queue(connection=conn)
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-def ApiLogin():
+    
+#notify specified users when event on calendar starts
+@app.route('/webhook', methods=['POST'])
+def EventChecker():
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
@@ -45,17 +48,14 @@ def ApiLogin():
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
-    global service
-    service = build('calendar', 'v3', credentials=creds)
 
+    service = build('calendar', 'v3', credentials=creds)
     #temporary userid storage
     global userlist
     userlist = []
 
-#send any messages to facebook
-@app.route('/webhook', methods=['POST'])
-#notify specified users when event on calendar starts
-def EventChecker():
+
+
     # Call the Calendar API
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     print('Getting the upcoming 3 events')
@@ -84,8 +84,6 @@ def EventChecker():
                 }
                 message = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
                 return message
-
-
 
 
 @app.route('/favicon.ico')
@@ -140,7 +138,6 @@ def WebhookHandle():
 
 
 if __name__ == "__main__":
-    ApiLogin()
     EventChecker()
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
