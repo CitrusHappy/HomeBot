@@ -23,13 +23,20 @@ q = Queue(connection=conn)
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
+
+def send_message(sender_id, message_text):
+    request_body = {
+    'recipient': {
+        'id': sender_id
+    },
+    'message': {"text":message_text}
+    }
+    requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
     
-#notify specified users when event on calendar starts
-@app.route('/webhook', methods=['POST'])
-def EventChecker():
-    """Shows basic usage of the Google Calendar API.
-    Prints the start and name of the next 10 events on the user's calendar.
-    """
+
+
+#checks to see if any google calendar events are starting
+def event_checker():
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -76,33 +83,27 @@ def EventChecker():
                 print('notifying user of event: ', start, event['summary'])
                 #sends a single message to each user in list
                 for user in userlist:
-                    request_body = {
-                    'recipient': {
-                        'id': user
-                    },
-                    'message': {"text":event['summary']}
-                    }
-                    message = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
-                    return message
+                    send_message(user, event['summary'])
+                    return "done"
             else:
                 return "it is not time to notify"
 
 
 @app.route('/favicon.ico')
-def Favicon():
+def favicon():
     return app.send_static_file('favicon.ico')
 
 
 @app.route('/')
-def Home():
-    q.enqueue(EventChecker)
+def home():
+    q.enqueue(event_checker)
     return 'This is the homebot default page.'
 
 
 #single one-on-one chat response protocol
 #verify token to make sure its a message from facebook
 @app.route('/webhook', methods=['GET'])
-def WebhookAuthorization():
+def webhook_authorization():
     verify_token = request.args.get("hub.verify_token")
     if verify_token == WEBHOOK_VERIFY_TOKEN and verify_token != None:
         return request.args.get("hub.challenge")
@@ -110,7 +111,7 @@ def WebhookAuthorization():
 
 #when a message is recieved, send one back
 @app.route('/webhook', methods=['POST'])
-def WebhookHandle():
+def webhook_handle():
     data = request.get_json()
     message = data['entry'][0]['messaging'][0]['message']
     if message != None:
@@ -140,7 +141,6 @@ def WebhookHandle():
 
 
 if __name__ == "__main__":
-    EventChecker()
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
     
