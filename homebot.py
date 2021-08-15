@@ -54,9 +54,6 @@ def ApiLogin():
 
 #send any messages to facebook
 @app.route('/webhook', methods=['POST'])
-def Notify(message):
-    return message
-
 #notify specified users when event on calendar starts
 def EventChecker():
     # Call the Calendar API
@@ -86,7 +83,7 @@ def EventChecker():
                 'message': {"text":event['summary']}
                 }
                 message = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
-                Notify(message)
+                return message
 
 
 
