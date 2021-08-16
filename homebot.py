@@ -112,13 +112,14 @@ def webhook_authorization():
 def webhook_handle():
     data = request.get_json()
     message = data['entry'][0]['messaging'][0]['message']
+    print(message)
     if message != None:
         sender_id = data['entry'][0]['messaging'][0]['sender']['id']
         if message['text']:
             message_text = message['text']
             ints = chatbot.predict_class(message_text)
             res = chatbot.get_response(ints, chatbot.intents, sender_id)
-            
+
             request_body = {
                     'recipient': {
                         'id': sender_id
