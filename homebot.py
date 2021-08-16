@@ -111,26 +111,22 @@ def webhook_authorization():
 @app.route('/webhook', methods=['POST'])
 def webhook_handle():
     data = request.get_json()
-    message = data['entry'][0]['messaging'][0]['message']
-    print(message)
-    if message != None:
+    print(data)
+    text = data['entry'][0]['messaging'][0]['message']['text']
+    if text:
         sender_id = data['entry'][0]['messaging'][0]['sender']['id']
-        if message['text']:
-            message_text = message['text']
-            ints = chatbot.predict_class(message_text)
-            res = chatbot.get_response(ints, chatbot.intents, sender_id)
+        ints = chatbot.predict_class(text)
+        res = chatbot.get_response(ints, chatbot.intents, sender_id)
+        request_body = {
+                'recipient': {
+                    'id': sender_id
+                },
+                'message': {"text":res}
+            }
+        print(res)
+        response = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
+        return response
 
-            request_body = {
-                    'recipient': {
-                        'id': sender_id
-                    },
-                    'message': {"text":res}
-                }
-            print(res)
-            response = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
-            return response
-        print('ok')
-        return 'ok'
     print('empty message')
     return 'empty message'
 
