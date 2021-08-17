@@ -24,7 +24,7 @@ q = Queue(connection=conn)
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-
+#handles json recreation and sending to facebook api
 def send_message(sender_id, message_text):
     request_body = {
     'recipient': {
@@ -32,8 +32,9 @@ def send_message(sender_id, message_text):
     },
     'message': {"text":message_text}
     }
-    requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
-    
+    print(message_text)
+    message = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
+    return message
 
 
 #checks to see if any google calendar events are starting
@@ -110,25 +111,21 @@ def webhook_authorization():
 #when a message is recieved, send one back
 @app.route('/webhook', methods=['POST'])
 def webhook_handle():
-    data = request.get_json()
-    print(data)
-    text = data['entry'][0]['messaging'][0]['message']['text']
-    if text:
-        sender_id = data['entry'][0]['messaging'][0]['sender']['id']
-        ints = chatbot.predict_class(text)
-        res = chatbot.get_response(ints, chatbot.intents, sender_id)
-        request_body = {
-                'recipient': {
-                    'id': sender_id
-                },
-                'message': {"text":res}
-            }
-        print(res)
-        response = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
-        return response
+    if request.method == 'POST':
+        data = request.get_json()
+        print(data)
+        text = data['entry'][0]['messaging'][0]['message']['text']
+        if text:
+            sender_id = data['entry'][0]['messaging'][0]['sender']['id']
+            ints = chatbot.predict_class(text)
+            res = chatbot.get_response(ints, chatbot.intents, sender_id)
+            return send_message(sender_id, res)
 
-    print('empty message')
-    return 'empty message'
+        print('empty message')
+        return 'empty message'
+
+    print('i tried to post myself :(')
+    return 'i tried to post myself :('
 
 
 

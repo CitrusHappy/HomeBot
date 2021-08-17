@@ -27,7 +27,7 @@
     },
     {
         "tag": "removeme",
-        "patterns": ["stop notifying me", "please stop sending me messages", "dont send me anything", "STOP!", "shut up!!!", "stop spamming me"],
+        "patterns": ["stop notifying me", "please stop sending me messages", "dont send me anything", "STOP!", "shut up!!!", "stop spamming me", "remove me", "dont notify me", "do not notify me"],
         "responses": ["alright you will no longer recieve any messages", "alright you will no longer be notified", "you will no longer recieve reminders from me"]
     }
 ]}

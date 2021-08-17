@@ -64,7 +64,6 @@ def get_response(intents_list, intents_json, sender_id='some gamer'):
             break
     return result
 
-print("the bot is awake.")
 
 #while True:
 #    message = input("")

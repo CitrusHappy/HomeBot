@@ -17,7 +17,6 @@ from tensorflow.python.ops.numpy_ops import np_array_ops
 #pre-process json data into a word list
 lemmatizer = WordNetLemmatizer()
 intents = json.loads(open('Data/intents.json').read())
-data = json.loads(open('Data/jared.json',  encoding="utf8").read())
 
 words = []
 classes = []
