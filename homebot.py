@@ -114,7 +114,7 @@ def webhook_handle():
     if request.method == 'POST':
         data = request.get_json()
         print(data)
-        if 'text' in data:
+        if 'message' in data['entry'][0]['messaging'][0]:
             text = data['entry'][0]['messaging'][0]['message']['text']
             sender_id = data['entry'][0]['messaging'][0]['sender']['id']
             ints = chatbot.predict_class(text)
