@@ -114,16 +114,20 @@ def webhook_handle():
     if request.method == 'POST':
         data = request.get_json()
         print(data)
+        #check if user sent a message
         if 'message' in data['entry'][0]['messaging'][0]:
-            text = data['entry'][0]['messaging'][0]['message']['text']
-            sender_id = data['entry'][0]['messaging'][0]['sender']['id']
-            ints = chatbot.predict_class(text)
-            res = chatbot.get_response(ints, chatbot.intents, sender_id)
-            return send_message(sender_id, res)
-
-        print('empty message')
-        return 'empty message'
-
+            #check if there is text
+            if 'text' in data['entry'][0]['messaging'][0]['message']:
+                text = data['entry'][0]['messaging'][0]['message']['text']
+                sender_id = data['entry'][0]['messaging'][0]['sender']['id']
+                ints = chatbot.predict_class(text)
+                res = chatbot.get_response(ints, chatbot.intents, sender_id)
+                return send_message(sender_id, res)
+            else:
+                print('no text found in message')
+                return 'no text found in message'
+        print('no message found')
+        return 'no message found'
     print('i tried to post myself :(')
     return 'i tried to post myself :('
 
