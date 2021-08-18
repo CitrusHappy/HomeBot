@@ -16,6 +16,7 @@ from flask import Flask, request
 #env variables
 WEBHOOK_VERIFY_TOKEN = os.getenv("WEBHOOK_VERIFY_TOKEN")
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
+SELF_ID = os.getenv("SELF_ID")
 
 
 app = Flask(__name__)
@@ -33,7 +34,7 @@ def send_message(sender_id, message_text):
     'message': {"text":message_text}
     }
     print(message_text)
-    message = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body).json()
+    message = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body)
     return message
 
 
@@ -79,9 +80,10 @@ def event_checker():
             print(now, ' == ', start)
 
             if start <= now:
-                print('notifying user of event: ', start, event['summary'])
+                
                 #sends a single message to each user in list
                 for user in chatbot.userlist:
+                    print('notifying ',user, ' of event: ', start, event['summary'])
                     send_message(user, event['summary'])
                     return "done"
             else:
@@ -116,13 +118,19 @@ def webhook_handle():
         print(data)
         #check if user sent a message
         if 'message' in data['entry'][0]['messaging'][0]:
-            #check if there is text
+            #check if there is text in the message
             if 'text' in data['entry'][0]['messaging'][0]['message']:
                 text = data['entry'][0]['messaging'][0]['message']['text']
                 sender_id = data['entry'][0]['messaging'][0]['sender']['id']
-                ints = chatbot.predict_class(text)
-                res = chatbot.get_response(ints, chatbot.intents, sender_id)
-                return send_message(sender_id, res)
+                
+                #check to see if our message was echo'd
+                if sender_id == SELF_ID:
+                    print('that was my message')
+                    return 'that was my message'
+                else:
+                    ints = chatbot.predict_class(text)
+                    res = chatbot.get_response(ints, chatbot.intents, sender_id)
+                    return send_message(sender_id, res)
             else:
                 print('no text found in message')
                 return 'no text found in message'
