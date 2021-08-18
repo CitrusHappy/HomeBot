@@ -25,7 +25,6 @@ q = Queue(connection=conn)
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
 #handles json recreation and sending to facebook api
-@app.route('/webhook', methods=['POST'])
 def send_message(sender_id, message_text):
     request_body = {
     'recipient': {
