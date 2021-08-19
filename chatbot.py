@@ -1,12 +1,10 @@
 from logging import ERROR
-import os
 import random
 import json
 import pickle
 import numpy as np
-import psycopg2
+import database
 
-from homebot import cursor
 
 import nltk
 from nltk.stem import WordNetLemmatizer
@@ -14,7 +12,7 @@ from nltk.stem import WordNetLemmatizer
 from tensorflow.keras.models import load_model
 from tensorflow.python.keras.backend import reverse
 
-DATABASE_URL = os.environ['DATABASE_URL']
+
 
 lemmatizer = WordNetLemmatizer()
 intents = json.loads(open('Data/intents.json').read())
@@ -24,7 +22,7 @@ classes = pickle.load(open('classes.pkl', 'rb'))
 model = load_model('homebotmodel.h5')
 
 
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+
 
 
 
@@ -62,11 +60,11 @@ def get_response(intents_list, intents_json, sender_id='some gamer'):
             #collect sender_id depending on response
             if tag == 'notifyme':
                 # check to see if user is already in table
-                cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id+";")
-                if cursor.fetchall() == 0:
+                database.cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id+";")
+                if database.cursor.fetchall() == 0:
                     #no rows
-                    cursor.execute("INSERT INTO tbl_user (UserID) VALUES ('"+sender_id+"');")
-                    conn.commit()
+                    database.cursor.execute("INSERT INTO tbl_user (UserID) VALUES ('"+sender_id+"');")
+                    database.conn.commit()
                     print('user ' + sender_id + ' has been added to the list')
                 else:
                     tag = 'alreadynotified'
@@ -74,14 +72,14 @@ def get_response(intents_list, intents_json, sender_id='some gamer'):
             if tag == 'removeme':
                 # check to see if user is already in table
                 
-                cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id+";")
-                if cursor.fetchall() == 0:
+                database.cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id+";")
+                if database.cursor.fetchall() == 0:
                     #no rows
                     tag = 'notonlist'
                     print('user ' + sender_id + ' is not on the list')
                 else:
-                    cursor.execute("DELETE FROM tbl_user WHERE UserID="+sender_id+";")
-                    conn.commit()
+                    database.cursor.execute("DELETE FROM tbl_user WHERE UserID="+sender_id+";")
+                    database.conn.commit()
                     print('user ' + sender_id + ' has been removed from the list')
 
             result = random.choice(i['responses'])

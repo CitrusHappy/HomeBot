@@ -3,6 +3,7 @@ import os.path
 import datetime
 import requests
 import chatbot
+import database
 
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -17,14 +18,11 @@ from flask import Flask, request
 WEBHOOK_VERIFY_TOKEN = os.getenv("WEBHOOK_VERIFY_TOKEN")
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
 SELF_ID = os.getenv("SELF_ID")
-DATABASE_URL = os.environ['DATABASE_URL']
 
 
 app = Flask(__name__)
 q = Queue(connection=conn)
-
-cursor = conn.cursor()
-cursor.execute("CREATE TABLE IF NOT EXISTS tbl_user (UserID int);")
+database.create_table()
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -85,8 +83,8 @@ def event_checker():
 
             if start <= now:
                 # Create a cursor to perform database operations
-                cursor.execute("SELECT UserID FROM tbl_user;")
-                userlist = cursor.fetchall()
+                database.cursor.execute("SELECT UserID FROM tbl_user;")
+                userlist = database.cursor.fetchall()
 
                 #sends a single message to each user database
                 for user in userlist:
