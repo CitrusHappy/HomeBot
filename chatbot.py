@@ -67,14 +67,12 @@ def get_response(intents_list, intents_json, sender_id='some gamer'):
                     database.conn.commit()
                     print('user ' + sender_id + ' has been added to the list')
                 else:
-                    tag = 'alreadynotified'
                     print('user ' + sender_id + ' already exists in the list')
             if tag == 'removeme':
                 # check to see if user is already in table
                 
                 if database.cursor.fetchall == 0:
                     #no rows
-                    tag = 'notonlist'
                     print('user ' + sender_id + ' is not on the list')
                 else:
                     database.cursor.execute("DELETE FROM tbl_user WHERE UserID="+sender_id+";")
