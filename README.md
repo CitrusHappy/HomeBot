@@ -3,5 +3,5 @@ A bot that and reminds Facebook messenger users of all events on a specified Goo
 
 If notifications to your phone weren't enough, now you can recieve a message reminding you and your specified buddies of an upcoming event on your calendar. 
 
-![demo gif](https:/)
-demo to be added
+![demo wip 1](https:/)
+
