@@ -3,7 +3,6 @@ import os.path
 import datetime
 import requests
 import chatbot
-import psycopg2
 
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -24,9 +23,6 @@ DATABASE_URL = os.environ['DATABASE_URL']
 app = Flask(__name__)
 q = Queue(connection=conn)
 
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-cursor = conn.cursor()
-cursor.execute("CREATE TABLE tbl_user (UserID int);")
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -87,8 +83,8 @@ def event_checker():
 
             if start <= now:
                 # Create a cursor to perform database operations
-                cursor.execute("SELECT UserID FROM tbl_user;")
-                userlist = cursor.fetchall()
+                chatbot.cursor.execute("SELECT UserID FROM tbl_user;")
+                userlist = chatbot.cursor.fetchall()
 
                 #sends a single message to each user database
                 for user in userlist:

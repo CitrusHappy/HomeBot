@@ -23,7 +23,8 @@ model = load_model('homebotmodel.h5')
 
 
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-
+cursor = conn.cursor()
+cursor.execute("CREATE TABLE IF NOT EXISTS tbl_user (UserID int);")
 
 
 def clean_sentence(sentence):
