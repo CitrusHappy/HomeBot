@@ -5,6 +5,7 @@ import requests
 import chatbot
 import psycopg2
 
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -23,7 +24,10 @@ DATABASE_URL = os.environ['DATABASE_URL']
 
 app = Flask(__name__)
 q = Queue(connection=conn)
+
+#database creation
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cursor = conn.cursor()
 cursor.execute("CREATE DATABASE chatbot;")
 cursor.execute("CREATE TABLE tbl_user (UserID int(16))")
