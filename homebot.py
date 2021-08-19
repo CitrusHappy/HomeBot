@@ -26,7 +26,7 @@ q = Queue(connection=conn)
 
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 cursor = conn.cursor()
-cursor.execute("CREATE TABLE tbl_user (UserID int)")
+cursor.execute("CREATE TABLE tbl_user (UserID int);")
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
