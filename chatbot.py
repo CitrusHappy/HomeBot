@@ -3,6 +3,7 @@ import random
 import json
 import pickle
 import numpy as np
+import settings
 
 import nltk
 from nltk.stem import WordNetLemmatizer
@@ -17,9 +18,7 @@ words = pickle.load(open('words.pkl', 'rb'))
 classes = pickle.load(open('classes.pkl', 'rb'))
 model = load_model('homebotmodel.h5')
 
-#temporary userid storage
-global userlist
-userlist = []
+
 
 def clean_sentence(sentence):
     sentence_words = nltk.word_tokenize(sentence)
@@ -54,10 +53,10 @@ def get_response(intents_list, intents_json, sender_id='some gamer'):
         if i['tag'] == tag:
             #collect sender_id depending on response
             if tag == 'notifyme':
-                userlist.append(sender_id)
+                settings.userlist.append(sender_id)
                 print('user ' + sender_id + ' has been added to the list')
             if tag == 'removeme':
-                userlist.remove(sender_id)
+                settings.userlist.remove(sender_id)
                 print('user ' + sender_id + ' has been removed from the list')
 
             result = random.choice(i['responses'])

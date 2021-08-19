@@ -3,6 +3,7 @@ import os.path
 import datetime
 import requests
 import chatbot
+import settings
 
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -84,7 +85,7 @@ def event_checker():
                 for user in chatbot.userlist:
                     print('notifying ',user, ' of event: ', start, event['summary'])
                     send_message(user, event['summary'])
-                    return "done"
+                    return 'done'
             else:
                 return "it is not time to notify"
 
@@ -130,6 +131,7 @@ def webhook_handle():
                     ints = chatbot.predict_class(text)
                     res = chatbot.get_response(ints, chatbot.intents, sender_id)
                     send_message(sender_id, res)
+                    return 'done'
             else:
                 print('no text found in message')
                 return 'no text found in message'
@@ -141,6 +143,7 @@ def webhook_handle():
 
 
 if __name__ == "__main__":
+    settings.init()
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
     
