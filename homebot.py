@@ -85,6 +85,7 @@ def event_checker():
                 # Create a cursor to perform database operations
                 database.cursor.execute("SELECT UserID FROM tbl_user;")
                 userlist = database.cursor.fetchall()
+                print("userlist: ", userlist)
 
                 #sends a single message to each user database
                 for user in userlist:

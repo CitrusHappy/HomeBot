@@ -22,7 +22,7 @@
     },
     {
         "tag": "notifyme",
-        "patterns": ["notify me", "send me reminders please", "i want to be notified.", "remind me of my events", "remind me of my chores"],
+        "patterns": ["notify me", "send me reminders please", "i want to be notified.", "remind me of my events", "remind me of my chores", "add me"],
         "responses": ["gotcha, ive added you to the list 😎", "ok you have been added", "alright ill let you know", "done. you will now be reminded"]
     },
     {
