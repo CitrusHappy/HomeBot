@@ -104,7 +104,7 @@ def favicon():
 
 @app.route('/')
 def home():
-    q.enqueue(event_checker)
+    event_checker()
     return 'This is the homebot default page.'
 
 

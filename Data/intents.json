@@ -29,5 +29,15 @@
         "tag": "removeme",
         "patterns": ["stop notifying me", "please stop sending me messages", "dont send me anything", "STOP!", "shut up!!!", "stop spamming me", "remove me", "dont notify me", "do not notify me"],
         "responses": ["alright you will no longer recieve any messages", "alright you will no longer be notified", "you will no longer recieve reminders from me"]
+    },
+    {
+        "tag": "alreadynotified",
+        "patterns": ["i want to be notified but i am already on the list", "i am already being notified, but add me to the list anyways"],
+        "responses": ["you have already been added to the notification list", "but you are already being notified", "sorry, but you are already on the list"]
+    },
+    {
+        "tag": "notonlist",
+        "patterns": ["i want to be removed from the list but i am already not on the list"],
+        "responses": ["you have already been removed from the list", "you are already not on the list", "you were never on the list"]
     }
 ]}
