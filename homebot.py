@@ -34,8 +34,7 @@ def send_message(sender_id, message_text):
     'message': {"text":message_text}
     }
     print(message_text)
-    message = requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body)
-    return message
+    requests.post('https://graph.facebook.com/v11.0/me/messages?access_token='+ACCESS_TOKEN,json=request_body)
 
 
 #checks to see if any google calendar events are starting
@@ -130,7 +129,7 @@ def webhook_handle():
                 else:
                     ints = chatbot.predict_class(text)
                     res = chatbot.get_response(ints, chatbot.intents, sender_id)
-                    return send_message(sender_id, res)
+                    send_message(sender_id, res)
             else:
                 print('no text found in message')
                 return 'no text found in message'
