@@ -60,6 +60,7 @@ def get_response(intents_list, intents_json, sender_id='some gamer'):
             #collect sender_id depending on response
             if tag == 'notifyme':
                 # check to see if user is already in table
+                print(database.cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id+";"))
                 if database.cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id+";") == 0:
                     #no rows
                     database.cursor.execute("INSERT INTO tbl_user (UserID) VALUES ("+sender_id+");")
