@@ -6,6 +6,8 @@ import pickle
 import numpy as np
 import psycopg2
 
+from homebot import cursor
+
 import nltk
 from nltk.stem import WordNetLemmatizer
 
@@ -23,8 +25,7 @@ model = load_model('homebotmodel.h5')
 
 
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-cursor = conn.cursor()
-cursor.execute("CREATE TABLE IF NOT EXISTS tbl_user (UserID int);")
+
 
 
 def clean_sentence(sentence):
@@ -61,7 +62,6 @@ def get_response(intents_list, intents_json, sender_id='some gamer'):
             #collect sender_id depending on response
             if tag == 'notifyme':
                 # check to see if user is already in table
-                cursor = conn.cursor()
                 cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id+";")
                 if cursor.fetchall() == 0:
                     #no rows
@@ -69,13 +69,15 @@ def get_response(intents_list, intents_json, sender_id='some gamer'):
                     conn.commit()
                     print('user ' + sender_id + ' has been added to the list')
                 else:
+                    tag = 'alreadynotified'
                     print('user ' + sender_id + ' already exists in the list')
             if tag == 'removeme':
                 # check to see if user is already in table
-                cursor = conn.cursor()
+                
                 cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id+";")
                 if cursor.fetchall() == 0:
                     #no rows
+                    tag = 'notonlist'
                     print('user ' + sender_id + ' is not on the list')
                 else:
                     cursor.execute("DELETE FROM tbl_user WHERE UserID="+sender_id+";")
