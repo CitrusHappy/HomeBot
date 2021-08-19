@@ -131,15 +131,10 @@ def webhook_handle():
                 text = data['entry'][0]['messaging'][0]['message']['text']
                 sender_id = data['entry'][0]['messaging'][0]['sender']['id']
                 
-                #check to see if our message was echo'd
-                if sender_id == SELF_ID:
-                    print('that was my message')
-                    return 'that was my message'
-                else:
-                    ints = chatbot.predict_class(text)
-                    res = chatbot.get_response(ints, chatbot.intents, sender_id)
-                    send_message(sender_id, res)
-                    return 'done'
+                ints = chatbot.predict_class(text)
+                res = chatbot.get_response(ints, chatbot.intents, sender_id)
+                send_message(sender_id, res)
+                return 'done'
             else:
                 print('no text found in message')
                 return 'no text found in message'
