@@ -63,7 +63,7 @@ def get_response(intents_list, intents_json, sender_id='some gamer'):
                 database.cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id+";")
                 if database.cursor.fetchall() == 0:
                     #no rows
-                    database.cursor.execute("INSERT INTO tbl_user (UserID) VALUES ('"+sender_id+"');")
+                    database.cursor.execute("INSERT INTO tbl_user (UserID) VALUES ("+sender_id+");")
                     database.conn.commit()
                     print('user ' + sender_id + ' has been added to the list')
                 else:
