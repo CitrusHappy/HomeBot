@@ -24,7 +24,9 @@ DATABASE_URL = os.environ['DATABASE_URL']
 app = Flask(__name__)
 q = Queue(connection=conn)
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-
+cursor = conn.cursor()
+cursor.execute("CREATE DATABASE chatbot;")
+cursor.execute("CREATE TABLE tbl_user (UserID int(16))")
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -85,7 +87,6 @@ def event_checker():
 
             if start <= now:
                 # Create a cursor to perform database operations
-                cursor = conn.cursor()
                 cursor.execute("SELECT UserID FROM tbl_user;")
                 userlist = cursor.fetchall()
 

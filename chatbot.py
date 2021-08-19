@@ -61,10 +61,10 @@ def get_response(intents_list, intents_json, sender_id='some gamer'):
             if tag == 'notifyme':
                 # check to see if user is already in table
                 cursor = conn.cursor()
-                cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id)
+                cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id+";")
                 if cursor.fetchall() == 0:
                     #no rows
-                    cursor.execute("INSERT INTO tbl_user (UserID) VALUES ('"+sender_id+"')")
+                    cursor.execute("INSERT INTO tbl_user (UserID) VALUES ('"+sender_id+"');")
                     conn.commit()
                     print('user ' + sender_id + ' has been added to the list')
                 else:
@@ -72,12 +72,12 @@ def get_response(intents_list, intents_json, sender_id='some gamer'):
             if tag == 'removeme':
                 # check to see if user is already in table
                 cursor = conn.cursor()
-                cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id)
+                cursor.execute("SELECT * from tbl_user WHERE UserID="+sender_id+";")
                 if cursor.fetchall() == 0:
                     #no rows
                     print('user ' + sender_id + ' is not on the list')
                 else:
-                    cursor.execute("DELETE FROM tbl_user WHERE UserID="+sender_id)
+                    cursor.execute("DELETE FROM tbl_user WHERE UserID="+sender_id+";")
                     conn.commit()
                     print('user ' + sender_id + ' has been removed from the list')
 
