@@ -3,7 +3,7 @@ import os.path
 import datetime
 import requests
 import chatbot
-import settings
+import psycopg2
 
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -18,13 +18,17 @@ from flask import Flask, request
 WEBHOOK_VERIFY_TOKEN = os.getenv("WEBHOOK_VERIFY_TOKEN")
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
 SELF_ID = os.getenv("SELF_ID")
+DATABASE_URL = os.environ['DATABASE_URL']
 
 
 app = Flask(__name__)
 q = Queue(connection=conn)
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+
 
 #handles json recreation and sending to facebook api
 def send_message(sender_id, message_text):
@@ -80,12 +84,18 @@ def event_checker():
             print(now, ' == ', start)
 
             if start <= now:
-                
-                #sends a single message to each user in list
-                for user in chatbot.userlist:
+                # Create a cursor to perform database operations
+                cursor = conn.cursor()
+                cursor.execute("SELECT UserID FROM tbl_user;")
+                userlist = cursor.fetchall()
+
+                #sends a single message to each user database
+                for user in userlist:
                     print('notifying ',user, ' of event: ', start, event['summary'])
                     send_message(user, event['summary'])
-                    return 'done'
+                
+                conn.close()
+                return 'done'
             else:
                 return "it is not time to notify"
 
@@ -143,7 +153,6 @@ def webhook_handle():
 
 
 if __name__ == "__main__":
-    settings.init()
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
     
